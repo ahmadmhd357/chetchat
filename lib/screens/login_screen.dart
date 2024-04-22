@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:chetchat/utils/animations.dart';
+import 'package:chetchat/widgets/signin_form.dart';
 import 'package:flutter/material.dart';
 
 import '../data/bg_data.dart';
@@ -118,73 +119,9 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
-                child: Padding(
-                  padding: const EdgeInsets.all(25),
-                  child: Form(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Center(
-                          child: Text(
-                            _isLogin ? "Sign in" : "Sign up",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                            ),
-                          ),
-                        ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Email Address',
-                            labelStyle: TextStyle(color: Colors.white),
-                            suffixIcon: Icon(
-                              Icons.email_rounded,
-                              color: Colors.white,
-                            ),
-                          ),
-                          keyboardType: TextInputType.emailAddress,
-                          autocorrect: false,
-                          textCapitalization: TextCapitalization.none,
-                        ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Password',
-                            labelStyle: TextStyle(color: Colors.white),
-                            suffixIcon: Icon(
-                              Icons.password,
-                              color: Colors.white,
-                            ),
-                          ),
-                          keyboardType: TextInputType.visiblePassword,
-                          autocorrect: false,
-                          textCapitalization: TextCapitalization.none,
-                          obscureText: true,
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Center(
-                          child: TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _isLogin = !_isLogin;
-                              });
-                            },
-                            child: Text(
-                              _isLogin
-                                  ? "don't have an account, click to sign up"
-                                  : "already have an account, click to sign in",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+                child: const Padding(
+                  padding:  EdgeInsets.all(25),
+                  child: SignInForm(),
                 )),
           ),
         ),

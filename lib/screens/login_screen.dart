@@ -16,6 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   int selectedIndex = 0;
   bool showOption = false;
+  bool _isLogin = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,6 +124,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Center(
+                          child: Text(
+                            _isLogin ? "Sign in" : "Sign up",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                          ),
+                        ),
                         TextFormField(
                           decoration: const InputDecoration(
                             labelText: 'Email Address',
@@ -133,7 +144,44 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           keyboardType: TextInputType.emailAddress,
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.none,
                         ),
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Password',
+                            labelStyle: TextStyle(color: Colors.white),
+                            suffixIcon: Icon(
+                              Icons.password,
+                              color: Colors.white,
+                            ),
+                          ),
+                          keyboardType: TextInputType.visiblePassword,
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.none,
+                          obscureText: true,
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Center(
+                          child: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                _isLogin = !_isLogin;
+                              });
+                            },
+                            child: Text(
+                              _isLogin
+                                  ? "don't have an account, click to sign up"
+                                  : "already have an account, click to sign in",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),

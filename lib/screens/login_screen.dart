@@ -5,7 +5,6 @@ import 'package:chetchat/widgets/signin_form.dart';
 import 'package:flutter/material.dart';
 
 import '../data/bg_data.dart';
-import '../utils/text_utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,7 +16,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   int selectedIndex = 0;
   bool showOption = false;
-  bool _isLogin = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

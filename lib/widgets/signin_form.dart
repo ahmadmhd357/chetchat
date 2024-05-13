@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+final _firebase = FirebaseAuth.instance;
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -12,16 +15,38 @@ class _SignInFormState extends State<SignInForm> {
   String _enteredPassword = '';
   final _formKey = GlobalKey<FormState>();
   bool _isLogin = true;
-  void _submit() {
-    bool isValid = _formKey.currentState!.validate();
-    if (isValid) {
-      _formKey.currentState!.save();
+  void _submit() async {
+    final isValid = _formKey.currentState!.validate();
+    if (!isValid) {
+      return;
+    }
+    _formKey.currentState!.save();
+
+    if (_isLogin) {
+    } else {
+      try {
+        final userCredentionals =
+            await _firebase.createUserWithEmailAndPassword(
+          email: _enteredEmail,
+          password: _enteredPassword,
+        );
+        print(userCredentionals);
+      } on FirebaseAuthException catch (e) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message ?? 'Something went wrong, try again later'),
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -56,9 +81,7 @@ class _SignInFormState extends State<SignInForm> {
               return null;
             },
             onSaved: (newValue) {
-              
-                _enteredEmail = newValue!;
-             
+              _enteredEmail = newValue!;
             },
           ),
           TextFormField(
@@ -81,9 +104,7 @@ class _SignInFormState extends State<SignInForm> {
               return null;
             },
             onSaved: (newValue) {
-              
-                _enteredPassword = newValue!;
-              
+              _enteredPassword = newValue!;
             },
           ),
           const SizedBox(

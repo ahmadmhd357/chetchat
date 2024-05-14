@@ -105,9 +105,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         alignment: Alignment.center,
         child: Container(
-          height: 400,
+          height: double.infinity,
           width: double.infinity,
-          margin: const EdgeInsets.symmetric(horizontal: 30),
+          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.white),
             borderRadius: BorderRadius.circular(15),
@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
                 child: const Padding(
-                  padding:  EdgeInsets.all(25),
+                  padding: EdgeInsets.all(25),
                   child: SignInForm(),
                 )),
           ),

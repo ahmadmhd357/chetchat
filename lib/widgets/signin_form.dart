@@ -1,3 +1,4 @@
+import 'package:chetchat/widgets/user_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -62,6 +63,8 @@ class _SignInFormState extends State<SignInForm> {
               ),
             ),
           ),
+          const Padding(padding: EdgeInsets.all(20)),
+          if (!_isLogin) const UserImagePicker(),
           TextFormField(
             decoration: const InputDecoration(
               labelText: 'Email Address',

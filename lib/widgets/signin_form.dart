@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chetchat/widgets/user_image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,6 @@ class _SignInFormState extends State<SignInForm> {
       if (_isLogin) {
         final userCredentials = await _firebase.signInWithEmailAndPassword(
             email: _enteredEmail, password: _enteredPassword);
-        print(userCredentials);
       } else {
         final userCredentionals =
             await _firebase.createUserWithEmailAndPassword(
@@ -47,7 +47,12 @@ class _SignInFormState extends State<SignInForm> {
             .child('${userCredentionals.user!.email}.jpg');
         await storageRef.putFile(_selectedImage!);
         final imageURl = await storageRef.getDownloadURL();
-        print(imageURl);
+        FirebaseFirestore.instance.collection("users").doc(userCredentionals.user!.uid).set({
+        "id":userCredentionals.user!.uid,
+        "email": userCredentionals.user!.email,
+        "username":"to be set...",
+        "image": imageURl
+        },);
       }
     } on FirebaseAuthException catch (e) {
       if (!context.mounted) return;
@@ -135,32 +140,31 @@ class _SignInFormState extends State<SignInForm> {
           const SizedBox(
             height: 40,
           ),
-          if(_isLoading)
-          const CircularProgressIndicator(),
-          if(!_isLoading)
-          ElevatedButton(
-            onPressed: _submit,
-            child: Text(_isLogin ? 'Login' : 'Sign up'),
-          ),
-          if(!_isLoading)
-          Center(
-            child: TextButton(
-              onPressed: () {
-                setState(() {
-                  _isLogin = !_isLogin;
-                });
-              },
-              child: Text(
-                _isLogin
-                    ? "don't have an account, click to sign up"
-                    : "already have an account, click to sign in",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
+          if (_isLoading) const CircularProgressIndicator(),
+          if (!_isLoading)
+            ElevatedButton(
+              onPressed: _submit,
+              child: Text(_isLogin ? 'Login' : 'Sign up'),
+            ),
+          if (!_isLoading)
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    _isLogin = !_isLogin;
+                  });
+                },
+                child: Text(
+                  _isLogin
+                      ? "don't have an account, click to sign up"
+                      : "already have an account, click to sign in",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
                 ),
               ),
-            ),
-          )
+            )
         ],
       ),
     );

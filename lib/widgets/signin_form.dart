@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:chetchat/widgets/user_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 final _firebase = FirebaseAuth.instance;
@@ -14,15 +17,20 @@ class SignInForm extends StatefulWidget {
 class _SignInFormState extends State<SignInForm> {
   String _enteredEmail = '';
   String _enteredPassword = '';
+  File? _selectedImage;
   final _formKey = GlobalKey<FormState>();
   bool _isLogin = true;
+  bool _isLoading = false;
   void _submit() async {
     final isValid = _formKey.currentState!.validate();
-    if (!isValid) {
+    if (!isValid || !_isLogin && _selectedImage == null) {
       return;
     }
     _formKey.currentState!.save();
     try {
+      setState(() {
+        _isLoading = true;
+      });
       if (_isLogin) {
         final userCredentials = await _firebase.signInWithEmailAndPassword(
             email: _enteredEmail, password: _enteredPassword);
@@ -33,7 +41,13 @@ class _SignInFormState extends State<SignInForm> {
           email: _enteredEmail,
           password: _enteredPassword,
         );
-        print(userCredentionals);
+        final storageRef = FirebaseStorage.instance
+            .ref()
+            .child('user_images')
+            .child('${userCredentionals.user!.email}.jpg');
+        await storageRef.putFile(_selectedImage!);
+        final imageURl = await storageRef.getDownloadURL();
+        print(imageURl);
       }
     } on FirebaseAuthException catch (e) {
       if (!context.mounted) return;
@@ -43,6 +57,9 @@ class _SignInFormState extends State<SignInForm> {
           content: Text(e.message ?? 'Something went wrong, try again later'),
         ),
       );
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -64,7 +81,10 @@ class _SignInFormState extends State<SignInForm> {
             ),
           ),
           const Padding(padding: EdgeInsets.all(20)),
-          if (!_isLogin) const UserImagePicker(),
+          if (!_isLogin)
+            UserImagePicker(
+              onPickImage: (pickedImage) => _selectedImage = pickedImage,
+            ),
           TextFormField(
             decoration: const InputDecoration(
               labelText: 'Email Address',
@@ -115,10 +135,14 @@ class _SignInFormState extends State<SignInForm> {
           const SizedBox(
             height: 40,
           ),
+          if(_isLoading)
+          const CircularProgressIndicator(),
+          if(!_isLoading)
           ElevatedButton(
             onPressed: _submit,
             child: Text(_isLogin ? 'Login' : 'Sign up'),
           ),
+          if(!_isLoading)
           Center(
             child: TextButton(
               onPressed: () {

@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
+          margin: const EdgeInsets.symmetric(horizontal: 30,),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.white),
             borderRadius: BorderRadius.circular(15),
